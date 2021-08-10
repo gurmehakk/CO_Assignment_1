@@ -295,22 +295,39 @@ def main(line):
 
 ret = []
 statements = {}
-op = {"add": '00000', "sub": '00000',
-      "mov": '0001100000', "ld": '00000', "st": '00000', "mul": '00000',
-      "div": '00000', "rs": '00000', "ls": '00000', "xor": '00000',
-      "or": '00000', "and": '00000', "not": '00000', "cmp": '00000',
-      "jmp": '00000', "jlt": '00000', "jgt": '00000', "je": '00000',
-      "hlt": '00000'}
 v = {}
-reg = {'R0': ['000', 0], 'R1': ['001', 0], 'R2': ['010', 0], 'R3': ['011', 0], 'R4': ['100', 0],
-       'R5': ['101', 0], 'R6': ['110', 0], 'FLAGS': ['111', 0]}
-var = 0
 labels = {}
+op = {"add": '00000', 
+      "sub": '00000',
+      "mov": '00000',
+      "ld":  '00000',
+      "st":  '00000',
+      "mul": '00000',
+      "div": '00000',
+      "rs":  '00000', 
+      "ls":  '00000', 
+      "xor": '00000',
+      "or":  '00000', 
+      "and": '00000', 
+      "not": '00000', 
+      "cmp": '00000',
+      "jmp": '00000',
+      "jlt": '00000',
+      "jgt": '00000',
+      "je":  '00000',
+      "hlt": '00000'}
+
+reg = {'R0': ['000', 0],
+       'R1': ['001', 0],
+       'R2': ['010', 0], 
+       'R3': ['011', 0],
+       'R4': ['100', 0],
+       'R5': ['101', 0],
+       'R6': ['110', 0], 
+       'FLAGS': ['111', 0]}
+var = 0
 line = ""
-# while (line!=None):
-#         line = input()
-#         statements[var]=[line.split(" "),var]
-#         var+=1
+
 while (1):
     try:
         line = input()
@@ -328,20 +345,11 @@ for i in statements.keys():
         del statements[i][0][0]
 k = 0
 for i in v.keys():
-    # binary
     v[i] = [convert(len(statements) - len(v) + k), ""]
     k += 1
 sk = 0
 while (len(v) + sk in statements.keys()):
     main(statements[len(v) + sk])
     sk += 1
-count = 0
 for i in range(len(ret)):
     print(ret[i])
-    count += 1
-# for i in v.keys():
-#         print(v[i][1])
-#         count+=1
-# while(count<=256):
-#      print("0000000000000000")
-#      count+=1
