@@ -4,7 +4,7 @@ import math
 def error():
     b = False
     for i in statements.keys():
-        b = error1(statements[i][0])
+        b = error1(statements[i])
         if (b == False):
             continue
         else:
@@ -13,81 +13,81 @@ def error():
 
 
 def error1(l):
-    if (l[0] != "var" and l[0] not in op.keys()):
-        print("Typo in instruction")
+    if (l[0][0] != "var" and l[0][0] not in op.keys()):
+        print("Typo in instruction in line "+str(l[1]))
 
         return True
-    elif ((l[0] == 'jmp' or l[0] == 'jlt' or l[0] == 'jgt' or l[0] == 'je') and (
-            l[1] in v.keys() or l[1] in reg.keys())):
-        print("Illegal memory address")
+    elif ((l[0][0] == 'jmp' or l[0][0] == 'jlt' or l[0][0] == 'jgt' or l[0][0] == 'je') and (
+            l[0][1] in v.keys() or l[0][1] in reg.keys())):
+        print("Illegal memory address "+str(l[1]))
         return True
-    elif (l[0] == "add" or l[0] == "sub" or l[0] == "mul" or l[0] == "xor" or l[0] == "or" or l[0] == "and"):
-        if (len(l) != 4):
-            print("Wrong syntax used for instructions")
+    elif (l[0][0] == "add" or l[0][0] == "sub" or l[0][0] == "mul" or l[0][0] == "xor" or l[0][0] == "or" or l[0][0] == "and"):
+        if (len(l[0]) != 4):
+            print("Wrong syntax used for instructions in line "+str(l[1]))
             return True
-        elif (l[1] not in reg.keys() or l[2] not in reg.keys() or l[3] not in reg.keys()):
-            print("Typos in register name")
+        elif (l[0][1] not in reg.keys() or l[0][2] not in reg.keys() or l[0][3] not in reg.keys()):
+            print("Typos in register name in line "+str(l[1]))
             return True
-    elif(l[0]=="mov"):
-        if (len(l) != 3):
-            print("Wrong syntax used for instructions")
+    elif(l[0][0]=="mov"):
+        if (len(l[0]) != 3):
+            print("Wrong syntax used for instructions in line"+str(l[1]))
             return True
-        elif (l[1] not in reg.keys()):
-            print("Typos in register name")
+        elif (l[0][1] not in reg.keys()):
+            print("Typos in register name in line "+str(l[1]))
             return True
-        elif(l[2][0:1]=="R"):
-            if(l[2] not in reg.keys()):
-                print("Invalid register name")
+        elif(l[0][2][0:1]=="R"):
+            if(l[0][2] not in reg.keys()):
+                print("Invalid register name in line "+str(l[1]))
                 return True
-        elif(l[2][0:1]=="$"):
-            if (int(l[2][1:],10)<0 and int(l[2][1:],10)>255):
-                print("Invalid immidiete")
+        elif(l[0][2][0:1]=="$"):
+            if (int(l[0][2][1:],10)<0 and int(l[0][2][1:],10)>255):
+                print("Invalid immidiete in line "+str(l[1]))
                 return True
         else:
-            print("Wrong move instruction type")
+            print("Wrong move instruction type in line "+str(l[1]))
             return True
     # b
-    elif ( l[0] == "rs" or l[0] == "ls"):
-        if (len(l) != 3):
-            print("Wrong syntax used for instructions")
+    elif ( l[0][0][0] == "rs" or l[0][0] == "ls"):
+        if (len(l[0]) != 3):
+            print("Wrong syntax used for instructions in line "+str(l[1]))
             return True
-        elif (l[1] not in reg.keys()):
-            print("Typos in register name")
+        elif (l[0][1] not in reg.keys()):
+            print("Typos in register name "+str(l[1]))
             return True
-        elif (l[2] not in reg.keys() and l[2] not in v.keys()):
-            print("invalid register/variable name/immidiete")
-    elif (l[0] == "div" or l[0] == "not" or l[0] == "cmp"):
-        if (len(l) != 3):
-            print("Wrong syntax used for instructions")
+        elif (l[0][2] not in reg.keys() and l[0][2] not in v.keys()):
+            print("invalid register/variable name/immidiete in line "+str(l[1]))
+    elif (l[0][0] == "div" or l[0][0] == "not" or l[0][0] == "cmp"+str(l[1])):
+        if (len(l[0]) != 3):
+            print("Wrong syntax used for instructions in line "+str(l[1]))
             return True
-        elif (l[2] not in reg.keys()):
-            print("Typos in register name")
+        elif (l[0][2] not in reg.keys()):
+            print("Typos in register name in line "+str(l[1]))
             return True
-        elif (l[1] not in reg.keys()):
-            print("Typo in register name")
+        elif (l[0][1] not in reg.keys()):
+            print("Typo in register name in line "+str(l[1]))
     # d
-    elif (l[0] == "ld" or l[0] == "st"):
-        if (len(l) != 3):
-            print("Wrong syntax used for instructions")
+    elif (l[0][0] == "ld" or l[0][0] == "st"):
+        if (len(l[0]) != 3):
+            print("Wrong syntax used for instructions in line "+str(l[1]))
             return True
-        if (l[1] not in reg.keys()):
-            print("Typo in register name")
+        if (l[0][1] not in reg.keys()):
+            print("Typo in register name in line "+str(l[1]))
             return True
-        if l[2] not in v.keys():
-            print("Typo in memory address")
+        if l[0][2] not in v.keys():
+            print("Typo in memory address in line "+str(l[1]))
             return True
     # e
-    elif (l[0] == "jmp" or l[0] == "jlt" or l[0] == "jgt" or l[0] == "je"):
-        if (len(l) != 3):
-            print("Wrong syntax used for instructions")
+    elif (l[0][0] == "jmp" or l[0][0] == "jlt" or l[0][0] == "jgt" or l[0][0] == "je"):
+        if (len(l[0]) != 3):
+            print("Wrong syntax used for instructions in line "+str(l[1]))
             return True
-        if l[2] not in v.keys():
-            print("Typo in memory address")
+        if l[0][2] not in v.keys():
+            print("Typo in memory address in line "+str(l[1]))
             return True
     # f
-    elif (l[0] == "hlt"):
-        if (len(l) != 1):
-            print("Wrong syntax used for instructions")
+    elif (l[0][0] == "hlt"):
+        if (len(l[0]) != 1):
+            print("Wrong syntax used for instructions in line "+str(l[1]))
             return True
 
 
@@ -389,9 +389,10 @@ labels = {}
 line = ""
 # while (line!="hlt"):
 #         line = input()
-#         if (line.split(" ")[0]!= "hlt" and (len(line.split(" ")) == 1)) :
-#             print("Invalid Instruction")
-#             exit(0)
+#         if (line.split(" ")[0] != "hlt" and (len(line.split(" ")) == 1)):
+#          print("Invalid Instruction at line "+str(var+1))
+#          exit(0)
+#
 #         statements[var]=[line.split(" "),var]
 #         var+=1
 while (1):
@@ -399,7 +400,7 @@ while (1):
         line = input()
         if (line != ""):
             if (line.split(" ")[0] != "hlt" and (len(line.split(" ")) == 1)):
-                print("Invalid Instruction")
+                print("Invalid Instruction at line "+str(var+1))
                 exit(0)
             statements[var] = [line.split(" "), var]
             var += 1
@@ -408,12 +409,12 @@ while (1):
 for i in statements.keys():
     if (statements[i][0][0] == 'var'):
         if (len(statements[i][0]) == 1):
-            print("Invalid Instruction")
+            print("Invalid Instruction at line "+str(statements[i][1]))
             exit(0)
         v[statements[i][0][1]] = 0
     elif (statements[i][0][0][-1:] == ':'):
         if (statements[i][0][0][:-1] in labels):
-            print("Two labels with same name -> Invalid Instruction")
+            print("Two labels with same name -> Invalid Instruction at line "+str(statements[i][1]))
             exit(0)
         # binary conversion
         labels[statements[i][0][0][:-1]] = convert(int(i) - len(v))
@@ -426,7 +427,7 @@ for i in v.keys():
     k += 1
 for i in statements.keys():
     if (statements[i][0][0] == "hlt" and statements[i][1] != len(statements) - 1):
-        print("More than one hlt statement")
+        print("More than one hlt statement at line "+str(statements[i][1])+"\n")
         exit(0)
 if (error()):
     exit()
