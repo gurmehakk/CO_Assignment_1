@@ -431,6 +431,9 @@ for i in statements.keys():
     if (statements[i][0][0] == "hlt" and statements[i][1] != len(statements) - 1):
         print("More than one hlt statement at line "+str(statements[i][1])+"\n")
         exit(0)
+if(len(statements)<256 and statements[len(statements)-1][0][0]!="hlt"):
+    print("Missing halt statement")
+    exit(0)
 spaceerror() # functio to check if multiple spaces are entered
 checkr()    # to check if variables are decleared after an instruction of some opcode is given
 if (error()): #if any arror then we exit and do not print anything anymore
