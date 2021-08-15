@@ -1,4 +1,3 @@
-import math
 def spaceerror():
     for i in statements.keys():
         for j in statements[i][0]:
