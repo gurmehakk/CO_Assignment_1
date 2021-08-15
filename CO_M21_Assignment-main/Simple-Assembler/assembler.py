@@ -1,4 +1,13 @@
 import math
+def spaceerror():
+    for i in statements.keys():
+        for j in statements[i][0]:
+            x=len(j)
+            j=j.strip()
+            y=len(j)
+            if(x!=y):
+                print("More than one spaces for separating different elements of an instruction at line "+str(statements[i][1]))
+                exit(0)
 def checkr():   #function to check if any variable is defined after a non var instruction is given
     i=0
     while(statements[i][0][0]=="var"):
@@ -277,113 +286,38 @@ def main(line):
             else:
                 ret.append(mov1(line[0]))
         elif (line[0][0] == "add"):
-            if (len(line[0]) != 4):
-                print("Wrong syntax used for instructions")
-                # raise error
-                pass
-            if (line[0][1] not in reg or line[0][2] not in reg or line[0][3] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(add(line[0]))
         elif (line[0][0] == "sub"):
-            if (len(line[0]) != 4):
-                print("Wrong syntax used for instructions")
-            if (line[0][1] not in reg or line[0][2] not in reg or line[0][3] not in reg):
-                # raise error
-                pass
-
-            else:
                 ret.append(sub(line[0]))
         elif (line[0][0] == "mul"):
-            if (line[0][1] not in reg or line[0][2] not in reg or line[0][3] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(mul(line[0]))
         elif (line[0][0] == "div"):
-            if (line[0][1] not in reg or line[0][2] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(div(line[0]))
         elif (line[0][0] == "ld"):
-            if (line[0][1] not in reg or line[0][2] not in v):
-                # raise error
-                pass
-            else:
                 ret.append(load(line[0]))
         elif (line[0][0] == "st"):
-            if (line[0][1] not in reg or line[0][2] not in v):
-                # raise error
-                pass
-            else:
                 ret.append(store(line[0]))
         elif (line[0][0] == "rs"):
-            if (line[0][1] not in reg or int(line[0][2][1:]) < 0 or int(line[0][2][1:]) > 255):
-                # raise error
-                pass
-            else:
                 ret.append(right_shift(line[0]))
         elif (line[0][0] == "ls"):
-            if (line[0][1] not in reg or int(line[0][2][1:]) < 0 or int(line[0][2][1:]) > 255):
-                # raise error
-                pass
-            else:
                 ret.append(left_shift(line[0]))
         elif (line[0][0] == "or"):
-            if (line[0][1] not in reg or line[0][2] not in reg or line[0][3] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(or_fnc(line[0]))
         elif (line[0][0] == "xor"):
-            if (line[0][1] not in reg or line[0][2] not in reg or line[0][3] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(xor_fnc(line[0]))
         elif (line[0][0] == "and"):
-            if (line[0][1] not in reg or line[0][2] not in reg or line[0][3] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(and_fnc(line[0]))
         elif (line[0][0] == "not"):
-            if (line[0][1] not in reg or line[0][2] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(not_fnc(line[0]))
         elif (line[0][0] == "cmp"):
-            if (line[0][1] not in reg or line[0][2] not in reg):
-                # raise error
-                pass
-            else:
                 ret.append(compare(line[0]))
         elif (line[0][0] == "jmp"):
-            if (line[0][1] not in labels):
-                # raise error
-                pass
-            else:
                 ret.append(jump_uncond(line[0]))
         elif (line[0][0] == "jlt"):
-            if (line[0][1] not in labels):
-                # raise error
-                pass
-            else:
                 ret.append(jump_if_less(line[0]))
         elif (line[0][0] == "jgt"):
-            if (line[0][1] not in labels):
-                # raise error
-                pass
-            else:
                 ret.append(jump_if_greater(line[0]))
         elif (line[0][0] == "je"):
-            if (line[0][1] not in labels):
-                # raise error
-                pass
-            else:
                 ret.append(jump_if_equal(line[0]))
         elif (line[0][0] == "hlt"):
             ret.append(halt(line[0]))
@@ -391,31 +325,60 @@ def main(line):
         # raise error
         pass
 
-
+#ret list is for storing the final binary output
 ret = []
+
+#statements dictionary is storing our input keys are line numbers (starting from 0 and are in base 10)
+# values are a 2d list storing
+#[ [<instuction in list format after splitting thee string >],line number of this instruction]
 statements = {}
-op = {"add": '00000', "sub": '00000',
-      "mov": '0001100000', "ld": '00000', "st": '00000', "mul": '00000',
-      "div": '00000', "rs": '00000', "ls": '00000', "xor": '00000',
-      "or": '00000', "and": '00000', "not": '00000', "cmp": '00000',
-      "jmp": '00000', "jlt": '00000', "jgt": '00000', "je": '00000',
+
+#op dictionary contains all our instructions as keys and values as their op codes
+op = {"add": '00000',
+      "sub": '00000',
+      "mov": '0001100000',
+      "ld": '00000',
+      "st": '00000',
+      "mul": '00000',
+      "div": '00000',
+      "rs": '00000',
+      "ls": '00000',
+      "xor": '00000',
+      "or": '00000',
+      "and": '00000',
+      "not": '00000',
+      "cmp": '00000',
+      "jmp": '00000',
+      "jlt": '00000',
+      "jgt": '00000',
+      "je": '00000',
       "hlt": '00000'}
+
+#v dictionary to store keys as variable names and values as memory addresses
 v = {}
-reg = {'R0': ['000', 0], 'R1': ['001', 0], 'R2': ['010', 0], 'R3': ['011', 0], 'R4': ['100', 0],
-       'R5': ['101', 0], 'R6': ['110', 0], 'FLAGS': ['111', 0]}
+
+#reg dictionary stores the register name as key and value is
+#a list containing binary representation of register and the value contained in it'''
+reg = {'R0': ['000', 0],
+       'R1': ['001', 0],
+       'R2': ['010', 0],
+       'R3': ['011', 0],
+       'R4': ['100', 0],
+       'R5': ['101', 0],
+       'R6': ['110', 0],
+       'FLAGS': ['111', 0]}
+
+#var is counting number of lines in our input
 var = 0
+
+#labels dictionary is for storing labels as keys and values are addresses
 labels = {}
+#to check if reserved words are used in variable and label name
 reserved=["add","sub","mul","div","jmp","jgt","jlt","je","cpm","ld","st","not","xor","or","and","ls","rs","mov","hlt","R0","R1","R2","R3","R4","R5","R6","FLAGS","var",]
-line = ""
+# to check if anything other than alphanumeric and _ is used in variable and label names
 vname="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-# while (line!="hlt"):
-#         line = input()
-#         if (line.split(" ")[0] != "hlt" and (len(line.split(" ")) == 1)):
-#          print("Invalid Instruction at line "+str(var+1))
-#          exit(0)
-#
-#         statements[var]=[line.split(" "),var]
-#         var+=1
+
+# loop to take input from user(will end when the inout is completed
 while (1):
     try:
         line = input()
@@ -428,6 +391,8 @@ while (1):
             var += 1
     except EOFError:
         break
+
+# storing variable addresses and removing labels after storing the label addresss in labels dictionary
 for i in statements.keys():
     if (statements[i][0][0] == 'var'):
         if (len(statements[i][0]) == 1):
@@ -456,23 +421,28 @@ for i in statements.keys():
         labels[statements[i][0][0][:-1]] = convert(int(i) - len(v))
         del statements[i][0][0]
 
+#assinging addresses to variables
 k = 0
 for i in v.keys():
     # binary
     v[i] = [convert(len(statements) - len(v) + k), ""]
     k += 1
+# checking for more than one halt statement
 for i in statements.keys():
     if (statements[i][0][0] == "hlt" and statements[i][1] != len(statements) - 1):
         print("More than one hlt statement at line "+str(statements[i][1])+"\n")
         exit(0)
-checkr()
-if (error()):
+spaceerror() # functio to check if multiple spaces are entered
+checkr()    # to check if variables are decleared after an instruction of some opcode is given
+if (error()): #if any arror then we exit and do not print anything anymore
     exit()
+# if no error found binary file creation starts and then printing it
 else:
     sk = 0
     while (len(v) + sk in statements.keys()):
         main(statements[len(v) + sk])
         sk += 1
+# Printing the binary file
     for i in range(len(ret)):
         print(ret[i])
 
