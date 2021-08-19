@@ -24,10 +24,17 @@ def plot( x_dim, y_dim):
     plt.grid()
     plt.show()
 def P():
-    plt.plot(X,linestyle="-",linewidth="5")
-    plt.plot(Y, linestyle="-", linewidth="5")
+    plt.plot(X,Y,linestyle="-",linewidth="5")
+    # plt.plot(Y, linestyle="-", linewidth="5")
     plot(X[-1],Y[-1])
+def Pd():
+    # print(X)
+    # print(Y)
+    plt.scatter(X,Y,c="blue")
+    # for i in range(len(X)):
+    #     plt.plot(X[i],Y[i],c="blue")
 
+    plot(max(X),max(Y))
 
 def convert1(a):
     # convert integer to 16 bit binary
@@ -113,13 +120,13 @@ def mul(l,pc):
     n1 = int(reg[l[10:13]], 2)
     n2 = int(reg[l[13:16]], 2)
     x = (n1 * n2)
-    x = convert1(x)
-    if len(x) > 16:
+    y = bin(x)
+    if len(y) > 16:
         if reg['111'][-4] == 1:
             return convert(int(pc,2)+1)
-        reg['111'] = (bin(int(reg['111'], 2) + 8))[2:]
+        reg['111'] = convert1(int(reg['111'], 2) + 8)
     else:
-        reg[l[7:10]] = x[2:]
+        reg[l[7:10]] = convert1(x)
     return convert(int(pc,2)+1)
 
 def div(l,pc):
@@ -173,11 +180,15 @@ def not_fnc(l,pc):
 def load(l,pc):
 
     reg[l[5:8]] = MEM[l[8:]]
+    X.append(X[-1])
+    Y.append(int(l[8:], 2))
     return convert(int(pc,2)+1)
 
 def store(l,pc):
 
     MEM[l[8:]] = reg[l[5:8]]
+    X.append(X[-1])
+    Y.append(int(l[8:], 2))
     return convert(int(pc,2)+1)
 
 def compare(l,pc):
@@ -194,20 +205,20 @@ def compare(l,pc):
 def jump_uncond(l,pc):
     return l[8:]
 def jump_if_less(l,pc):
-    if (reg['111'][-3] == 1):
+    if (reg['111'][-3] == '1'):
         return l[8:]
     else:
         return convert(int(pc, 2) + 1)
 
 
 def jump_if_greater(l,pc):
-    if (reg['111'][-2] == 1):
+    if (reg['111'][-2] == '1'):
         return l[8:]
     return convert(int(pc, 2) + 1)
 
 
 def jump_if_equal(l,pc):
-    if (reg['111'][-1] == 1):
+    if (reg['111'][-1] == '1'):
         return l[8:]
     return convert(int(pc, 2) + 1)
 
@@ -289,4 +300,4 @@ def M(pc):
         RF_dump()
     MEM_DUMP()
 M(pc)
-P()
+Pd()
