@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
+
 import numpy as np
 X=[]
 Y=[]
 def plot( x_dim, y_dim):
     '''
-    Polygon and Circle class should use this function while plotting
     x_dim and y_dim should be such that both the figures are visible inside the plot
     '''
     x_dim, y_dim = 1.2 * x_dim, 1.2 * y_dim
@@ -12,28 +12,14 @@ def plot( x_dim, y_dim):
     plt.plot([0, 0], (0, y_dim), 'k-')
     plt.xlim(0, x_dim)
     plt.ylim(0, y_dim)
-    # major_ticksx = np.arange(0, x_dim, 1)
-    # # minor_ticksx = np.arange(0, x_dim, 1)
-    # major_ticksy = np.arange(0, y_dim, 1)
-    # # minor_ticksy = np.arange(0, y_dim, 1)
-    # plt.xticks(major_ticksx)
-    # # plt.xticks(minor_ticksx, minor=True)
-    # plt.yticks(major_ticksy)
-    # # plt.yticks(minor_ticksy, minor=True)
-
+    plt.xlabel("Cycle number")
+    plt.ylabel("Accessed memory address")
     plt.grid()
+    sams="CO"+str(len(X))+".png"
+    plt.savefig(sams)
     plt.show()
-def P():
-    plt.plot(X,Y,linestyle="-",linewidth="5")
-    # plt.plot(Y, linestyle="-", linewidth="5")
-    plot(X[-1],Y[-1])
 def Pd():
-    # print(X)
-    # print(Y)
     plt.scatter(X,Y,c="blue")
-    # for i in range(len(X)):
-    #     plt.plot(X[i],Y[i],c="blue")
-
     plot(max(X),max(Y))
 
 def convert1(a):
@@ -79,70 +65,70 @@ while (mlen <= 255):
     MEM[convert(mlen)] = "0000000000000000"
     mlen+=1
 def mov1(l,pc):
+    reg["111"]="0000000000000000"
     reg[l[5:8]]=convert1(int(l[8:], 2))
     return convert(int(pc,2)+1)
 
 
 def mov2(l,pc):
     reg[l[10:13]]=convert1(int(reg[l[13:]],2))
-    if(l[13:]=="111"):
-        reg["111"]="0000000000000000"
+    reg["111"]="0000000000000000"
     return convert(int(pc,2)+1)
 
 
 def add(l,pc):
-
+    reg["111"] = "0000000000000000"
     n1 = int(reg[l[10:13]], 2)
     n2 = int(reg[l[13:16]], 2)
     x = (n1 + n2)
-    x = convert1(x)
-    if len(x) > 16:
-        if reg['111'][-4] == 1:
-            return convert(int(pc,2)+1)
+    y = bin(x)
+    if len(y) > 18:
+        reg[l[7:10]] = y[-16:]
         reg['111'] = convert1(int(reg['111'], 2) + 8)
     else:
-        reg[l[7:10]] = x
+        reg[l[7:10]] = convert1(x)
     return convert(int(pc, 2) + 1)
 
 def sub(l,pc):
+    reg["111"] = "0000000000000000"
     n1 = int(reg[l[10:13]], 2)
     n2 = int(reg[l[13:16]], 2)
     x = (n1 - n2)
     if x < 0:
-        if reg['111'][-4] == 1:
-            return convert(int(pc,2)+1)
-        reg['111'] = convert1(int(reg['111'], 2) + 8)
-        return convert(int(pc,2)+1)
-    reg[l[7:10]] = convert1(x)
-    return convert(int(pc,2)+1)
-
-def mul(l,pc):
-    n1 = int(reg[l[10:13]], 2)
-    n2 = int(reg[l[13:16]], 2)
-    x = (n1 * n2)
-    y = bin(x)
-    if len(y) > 16:
-        if reg['111'][-4] == 1:
-            return convert(int(pc,2)+1)
+        reg[l[7:10]] ="0000000000000000"
         reg['111'] = convert1(int(reg['111'], 2) + 8)
     else:
         reg[l[7:10]] = convert1(x)
     return convert(int(pc,2)+1)
 
+def mul(l,pc):
+    reg["111"] = "0000000000000000"
+    n1 = int(reg[l[10:13]], 2)
+    n2 = int(reg[l[13:16]], 2)
+    x = (n1 * n2)
+    y = bin(x)
+    if len(y) > 18:
+        reg[l[7:10]]=y[-16:]
+        reg['111'] = convert1(int(reg['111'], 2) + 8)
+
+    else:
+        reg[l[7:10]] = convert1(x)
+    return convert(int(pc,2)+1)
+
 def div(l,pc):
+    reg["111"]="0000000000000000"
     n1 = int(reg[l[10:13]], 2)
     n2 = int(reg[l[13:16]], 2)
     x = (n1 // n2)
     y = n1 % n2
     x = convert1(x)
     y = convert1(y)
-    if (len(x) > 16):
-        reg['111'] = (bin(int(reg['111'], 2) + 8))[2:]
-    else:
-        reg[l[7:10]] = x[2:]
+    reg["R0"]=x
+    reg["R1"]=y
     return convert(int(pc,2)+1)
 
 def left_shift(l,pc):
+    reg["111"] = "0000000000000000"
     x = int(reg[l[5:8]], 2) << int(l[8:], 2)
     x = convert1(x)
     if (len(x) > 16):
@@ -152,40 +138,41 @@ def left_shift(l,pc):
     return convert(int(pc,2)+1)
 
 def right_shift(l,pc):
+    reg["111"] = "0000000000000000"
     x = int(reg[l[5:8]], 2) >> int(l[8:], 2)
     x = convert1(x)
     reg[l[5:8]] = x
     return convert(int(pc,2)+1)
 
 def xor_fnc(l,pc):
-
+    reg["111"] = "0000000000000000"
     reg[l[7:10]] = convert1(int(reg[l[10:13]], 2) ^ int(reg[l[13:]], 2))
     return convert(int(pc,2)+1)
 
 def or_fnc(l,pc):
-
+    reg["111"] = "0000000000000000"
     reg[l[7:10]] = convert1(int(reg[l[10:13]], 2) | int(reg[l[13:]], 2))
     return convert(int(pc,2)+1)
 
 def and_fnc(l,pc):
-
+    reg["111"] = "0000000000000000"
     reg[l[7:10]] = convert1(int(reg[l[10:13]], 2) & int(reg[l[13:]], 2))
 
     return convert(int(pc,2)+1)
 def not_fnc(l,pc):
-
+    reg["111"] = "0000000000000000"
     reg[l[10:13]] = convert1(~int(reg[l[13:]], 2))
     return convert(int(pc,2)+1)
 
 def load(l,pc):
-
+    reg["111"] = "0000000000000000"
     reg[l[5:8]] = MEM[l[8:]]
     X.append(X[-1])
     Y.append(int(l[8:], 2))
     return convert(int(pc,2)+1)
 
 def store(l,pc):
-
+    reg["111"] = "0000000000000000"
     MEM[l[8:]] = reg[l[5:8]]
     X.append(X[-1])
     Y.append(int(l[8:], 2))
